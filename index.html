@@ -1,0 +1,292 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Experiment 07</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f0ea;
+            margin: 0;
+            color: #222;
+        }
+        header, footer {
+            background: #202020;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        h2 { color: #ff5b2e; }
+        section {
+            background: white;
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        input {
+            padding: 9px;
+            margin: 6px 0;
+            width: 100%;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+        button {
+            background: #202020;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            cursor: pointer;
+            margin: 8px 4px 8px 0;
+        }
+        button:hover { background: #ff5b2e; }
+        .result {
+            background: #e8eee9;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .product {
+            background: #f3f0ea;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .product input { width: 70px; }
+        #device {
+            width: 180px;
+            height: 110px;
+            background: #ff5b2e;
+            border-radius: 15px;
+            margin: 25px auto;
+            position: relative;
+            transition: 0.3s;
+        }
+        #screen {
+            background: #bde5ed;
+            width: 65%;
+            height: 65%;
+            position: absolute;
+            top: 17%;
+            left: 17%;
+            border-radius: 5px;
+        }
+        .center { text-align: center; }
+        @media(max-width: 600px) {
+            .products { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>TECHZONE ELECTRONICS STORE</h1>
+    <p>Experiment 07 - Working with jQuery</p>
+</header>
+
+<!-- 1. Budget Calculator -->
+<section>
+    <h2>1. TechZone Budget Calculator</h2>
+    <p>Enter your budget and divide it into different categories.</p>
+
+    <label>Total Budget (₹)</label>
+    <input type="number" id="budget" value="15000" min="1">
+
+    <div class="products">
+        <div>
+            <label>Electronics (%)</label>
+            <input type="number" id="electronics" value="50">
+        </div>
+        <div>
+            <label>Accessories (%)</label>
+            <input type="number" id="accessories" value="20">
+        </div>
+        <div>
+            <label>Emergency (%)</label>
+            <input type="number" id="emergency" value="20">
+        </div>
+        <div>
+            <label>Savings (%)</label>
+            <input type="number" id="savings" value="10">
+        </div>
+    </div>
+
+    <button id="calculateBudget">Evaluate My Budget</button>
+    <div class="result" id="budgetResult">
+        Your budget details will appear here.
+    </div>
+</section>
+
+<!-- 2. Electronics Order Calculator -->
+<section>
+    <h2>2. Electronics Order Calculator</h2>
+    <p>Select product quantities to calculate your purchase bill.</p>
+
+    <div class="products">
+        <div class="product">
+            <h3>Wireless Headphones</h3>
+            <p>Price: ₹8,499</p>
+            Quantity:
+            <input type="number" id="headphones" value="0" min="0">
+        </div>
+
+        <div class="product">
+            <h3>Smart Watch</h3>
+            <p>Price: ₹5,999</p>
+            Quantity:
+            <input type="number" id="watch" value="0" min="0">
+        </div>
+
+        <div class="product">
+            <h3>Mini Speaker</h3>
+            <p>Price: ₹3,299</p>
+            Quantity:
+            <input type="number" id="speaker" value="0" min="0">
+        </div>
+
+        <div class="product">
+            <h3>Keyboard</h3>
+            <p>Price: ₹6,499</p>
+            Quantity:
+            <input type="number" id="keyboard" value="0" min="0">
+        </div>
+    </div>
+
+    <button id="placeOrder">Place Order</button>
+    <div class="result" id="orderResult">
+        Your purchase bill will appear here.
+    </div>
+</section>
+
+<!-- 3. Product Customization Workshop -->
+<section class="center">
+    <h2>3. TechZone Product Customization</h2>
+    <p>Customize the appearance of your electronic device using jQuery.</p>
+
+    <div id="device">
+        <div id="screen"></div>
+    </div>
+
+    <button id="red">Red Body</button>
+    <button id="blue">Blue Body</button>
+    <button id="black">Black Body</button>
+    <button id="tint">Change Screen Tint</button>
+    <button id="size">Change Size</button>
+    <button id="reset">Reset</button>
+</section>
+
+<footer>
+    <p>TechZone Electronics Store | Experiment 07</p>
+</footer>
+
+<script>
+$(document).ready(function() {
+
+    // 1. Budget Calculator
+    $("#calculateBudget").click(function() {
+        let amount = Number($("#budget").val());
+
+        let e = Number($("#electronics").val());
+        let a = Number($("#accessories").val());
+        let em = Number($("#emergency").val());
+        let s = Number($("#savings").val());
+
+        if (amount <= 0 || e < 0 || a < 0 || em < 0 || s < 0) {
+            alert("Enter valid budget and percentages!");
+            return;
+        }
+
+        if (e + a + em + s !== 100) {
+            alert("The total percentage must be 100%!");
+            return;
+        }
+
+        $("#budgetResult").html(
+            "<h3>Budget Distribution</h3>" +
+            "Electronics: ₹" + (amount * e / 100).toFixed(2) + "<br>" +
+            "Accessories: ₹" + (amount * a / 100).toFixed(2) + "<br>" +
+            "Emergency: ₹" + (amount * em / 100).toFixed(2) + "<br>" +
+            "Savings: ₹" + (amount * s / 100).toFixed(2)
+        );
+    });
+
+    // 2. Electronics Order Calculator
+    $("#placeOrder").click(function() {
+        let h = Number($("#headphones").val());
+        let w = Number($("#watch").val());
+        let sp = Number($("#speaker").val());
+        let k = Number($("#keyboard").val());
+
+        if ([h, w, sp, k].some(q => q < 0 || !Number.isInteger(q))) {
+            alert("Enter valid product quantities!");
+            return;
+        }
+
+        let total = h * 8499 + w * 5999 +
+                    sp * 3299 + k * 6499;
+
+        if (total === 0) {
+            alert("Please select at least one product!");
+            return;
+        }
+
+        $("#orderResult").html(
+            "<h3>Purchase Order Bill</h3>" +
+            "Headphones: ₹" + (h * 8499) + "<br>" +
+            "Smart Watch: ₹" + (w * 5999) + "<br>" +
+            "Mini Speaker: ₹" + (sp * 3299) + "<br>" +
+            "Keyboard: ₹" + (k * 6499) +
+            "<hr><h3>Total Price: ₹" + total + "</h3>"
+        );
+    });
+
+    // 3. Product Customization
+    $("#red").click(function() {
+        $("#device").css("background", "red");
+    });
+
+    $("#blue").click(function() {
+        $("#device").css("background", "blue");
+    });
+
+    $("#black").click(function() {
+        $("#device").css("background", "black");
+    });
+
+    $("#tint").click(function() {
+        $("#screen").css("background", "#ffcc66");
+    });
+
+    $("#size").click(function() {
+        $("#device").css({
+            "width": "230px",
+            "height": "140px"
+        });
+    });
+
+    $("#reset").click(function() {
+        $("#device").css({
+            "background": "#ff5b2e",
+            "width": "180px",
+            "height": "110px"
+        });
+        $("#screen").css("background", "#bde5ed");
+    });
+
+});
+</script>
+
+</body>
+</html>
+```
